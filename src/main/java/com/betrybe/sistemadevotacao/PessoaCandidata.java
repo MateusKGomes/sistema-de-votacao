@@ -6,9 +6,9 @@ public abstract class PessoaCandidata extends Pessoa {
   int votos;
 
   PessoaCandidata(String nome, int numero) {
+    super.nome = nome;
     this.votos = 0;
     this.numero = numero;
-    super.nome = nome;
   }
 
   public int getVotos() {
