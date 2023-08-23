@@ -1,13 +1,14 @@
 package com.betrybe.sistemadevotacao;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
-public abstract class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
+public class GerenciamentoVotacao implements GerenciamentoVotacaoInterface {
 
-  private ArrayList<PessoaEleitora> pessoasEleitoras = new ArrayList<PessoaEleitora>();
+  private ArrayList<PessoaEleitora> pessoasEleitoras = new ArrayList<>();
   private ArrayList<String> cpfsComputados = new ArrayList<String>();
-  private ArrayList<PessoaCandidata> pessoasCandidatas = new ArrayList<PessoaCandidata>();
+  private ArrayList<PessoaCandidata> pessoasCandidatas = new ArrayList<>();
 
   /**
    * cadastrarPessoaCandidata.
@@ -16,12 +17,11 @@ public abstract class GerenciamentoVotacao implements GerenciamentoVotacaoInterf
     for (PessoaCandidata pessoa : pessoasCandidatas) {
       if (pessoa.getNumero() == numero) {
         System.out.println("Número da pessoa candidata já utilizado!");
-      } else {
-        PessoaCandidata pessoaCandidata = new PessoaCandidata(nome, numero);
-        pessoasCandidatas.add(pessoaCandidata);
+        break;
       }
     }
-
+    PessoaCandidata pessoaCandidata = new PessoaCandidata(nome, numero);
+    pessoasCandidatas.add(pessoaCandidata);
   }
 
   /**
@@ -29,25 +29,27 @@ public abstract class GerenciamentoVotacao implements GerenciamentoVotacaoInterf
    */
   public void cadastrarPessoaEleitora(String nome, String cpf) {
     for (PessoaEleitora pessoa : pessoasEleitoras) {
-      if (pessoa.getCpf().equals(cpf)) {
+      if (Objects.equals(pessoa.getCpf(), cpf)) {
         System.out.println("Pessoa eleitora já cadastrada!");
-      } else {
-        PessoaEleitora pessoaEleitora = new PessoaEleitora(nome, cpf);
-        pessoasEleitoras.add(pessoaEleitora);
+        break;
       }
     }
+    PessoaEleitora pessoaEleitora = new PessoaEleitora(nome, cpf);
+    pessoasEleitoras.add(pessoaEleitora);
   }
 
   /**
    * votar.
    */
   public void votar(String cpfPessoaEleitora, int numeroPessoaCandidata) {
+    if (cpfsComputados.stream().anyMatch(n -> n.equals(cpfPessoaEleitora))) {
+      System.out.println("Pessoa eleitora já votou!");
+    }
     for (PessoaCandidata pessoa : pessoasCandidatas) {
-      if (cpfsComputados.contains(cpfPessoaEleitora)) {
-        System.out.println("Pessoa eleitora já votou!");
-      } else if (pessoa.getNumero() == numeroPessoaCandidata) {
+      if (pessoa.getNumero() == numeroPessoaCandidata) {
         pessoa.receberVoto();
         cpfsComputados.add(cpfPessoaEleitora);
+        return;
       }
     }
   }
@@ -58,16 +60,13 @@ public abstract class GerenciamentoVotacao implements GerenciamentoVotacaoInterf
   public void mostrarResultado() {
     if (cpfsComputados.isEmpty()) {
       System.out.println("É preciso ter pelo menos um voto para mostrar o resultado");
-    } else {
-      int totalVotos = 0;
-      for (PessoaCandidata pessoa : pessoasCandidatas) {
-        totalVotos += pessoa.votos;
-        int porcentagemVotos = Math.round((float) (pessoa.getVotos() * 100) / totalVotos);
-        System.out.println(
-            "Nome:" + pessoa.getNome() + "-" + pessoa.getVotos() + "votos" + "(" + porcentagemVotos
-                + "%)"
-                + "Total de votos: " + totalVotos);
-      }
+    }
+    for (PessoaCandidata pessoa : pessoasCandidatas) {
+      int porcentagemVotos =  pessoa.getVotos() * 100 / cpfsComputados.size();
+      System.out.println(
+          "Nome: " + pessoa.getNome() + " - " + pessoa.getVotos() + " votos ( " + porcentagemVotos
+              + "% )"
+              + "Total de votos: " + cpfsComputados.size());
     }
   }
 }
