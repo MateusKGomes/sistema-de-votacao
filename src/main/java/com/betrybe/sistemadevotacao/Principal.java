@@ -12,17 +12,19 @@ public class Principal {
     String opcaoCandidato;
     Scanner scanner = new Scanner(System.in);
 
+    GerenciamentoVotacao gerenciaVoto = new GerenciamentoVotacao();
+
+
     do {
 
-      System.out.println("Cadastrar pessoa candidata?\n");
+      System.out.println("Cadastrar pessoa candidata?");
       System.out.println("1 - Sim");
       System.out.println("2 - Não");
-      System.out.println("Entre com o número correspondente à opção desejada:\n");
+      System.out.println("Entre com o número correspondente à opção desejada:");
       opcaoCandidato = scanner.nextLine();
-      System.out.println();
 
       if (opcaoCandidato.equals("1")) {
-        cadastroPessoaCandidata(scanner);
+        cadastroPessoaCandidata(scanner, gerenciaVoto);
       }
 
     } while (!opcaoCandidato.equalsIgnoreCase("2"));
@@ -30,15 +32,14 @@ public class Principal {
     String opcaoEleitora;
     do {
 
-      System.out.println("Cadastrar pessoa eleitora?\n\n");
+      System.out.println("Cadastrar pessoa eleitora?");
       System.out.println("1 - Sim");
       System.out.println("2 - Não");
-      System.out.println("Entre com o número correspondente à opção desejada:\n");
+      System.out.println("Entre com o número correspondente à opção desejada:");
       opcaoEleitora = scanner.nextLine();
-      System.out.println();
 
       if (opcaoEleitora.equals("1")) {
-        cadastroPessoaEleitora(scanner);
+        cadastroPessoaEleitora(scanner, gerenciaVoto);
       }
 
     } while (!opcaoEleitora.equalsIgnoreCase("2"));
@@ -47,23 +48,24 @@ public class Principal {
 
     do {
 
-      System.out.println("Entre com o número correspondente à opção desejada:\n");
+      System.out.println("Entre com o número correspondente à opção desejada:");
       System.out.println("1 - Votar");
       System.out.println("2 - Resultado Parcial");
       System.out.println("3 - Finalizar Votação");
 
       opcaoVoto = scanner.nextLine();
-      System.out.println();
 
       if (opcaoVoto.equals("1")) {
-        votacao(scanner);
+        votacao(scanner, gerenciaVoto);
       } else if (opcaoVoto.equals("2")) {
-        resultadoParcial();
+        gerenciaVoto.mostrarResultado();
       }
 
     } while (!opcaoVoto.equalsIgnoreCase("3"));
 
+    gerenciaVoto.mostrarResultado();
 
+    scanner.close();
   }
 
 
@@ -71,47 +73,35 @@ public class Principal {
    * cadastroPessoaCandidata.
    */
 
-  public static void cadastroPessoaCandidata(Scanner scanner) {
-    System.out.print("Entre com o nome da pessoa candidata: ");
+  public static void cadastroPessoaCandidata(Scanner scanner, GerenciamentoVotacao voto) {
+    System.out.print("Entre com o nome da pessoa candidata:");
     String nome = scanner.nextLine();
-    System.out.print("Entre com o número da pessoa candidata: ");
+    System.out.print("Entre com o número da pessoa candidata:");
     int numero = Integer.parseInt(scanner.nextLine());
-    GerenciamentoVotacao pessoaCandidata = new GerenciamentoVotacao();
-    pessoaCandidata.cadastrarPessoaCandidata(nome, numero);
+    voto.cadastrarPessoaCandidata(nome, numero);
 
   }
 
   /**
    * cadastroPessoaEleitora.
    */
-  public static void cadastroPessoaEleitora(Scanner scanner) {
-    System.out.print("Entre com o nome da pessoa eleitora: ");
+  public static void cadastroPessoaEleitora(Scanner scanner, GerenciamentoVotacao voto) {
+    System.out.print("Entre com o nome da pessoa eleitora:");
     String nome = scanner.nextLine();
-    System.out.print("Entre com o cpf da pessoa eleitora: ");
+    System.out.print("Entre com o cpf da pessoa eleitora:");
     String cpf = scanner.nextLine();
-    GerenciamentoVotacao pessoaEleitora = new GerenciamentoVotacao();
-    pessoaEleitora.cadastrarPessoaEleitora(nome, cpf);
-
+    voto.cadastrarPessoaEleitora(nome, cpf);
   }
 
   /**
    * votacao.
    */
 
-  public static void votacao(Scanner scanner) {
-    System.out.print("Entre com o cpf da pessoa eleitora: ");
+  public static void votacao(Scanner scanner, GerenciamentoVotacao voto) {
+    System.out.print("Entre com o cpf da pessoa eleitora:");
     String cpf = scanner.nextLine();
-    System.out.print("Entre com o número da pessoa candidata: ");
+    System.out.print("Entre com o número da pessoa candidata:");
     int numero = Integer.parseInt(scanner.nextLine());
-    GerenciamentoVotacao voto = new GerenciamentoVotacao();
     voto.votar(cpf, numero);
-  }
-
-  /**
-   * resultadoParcial.
-   */
-  public static void resultadoParcial() {
-    GerenciamentoVotacao resultado = new GerenciamentoVotacao();
-    resultado.mostrarResultado();
   }
 }
